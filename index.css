@@ -74,8 +74,4 @@ nav ul li a:hover::after{
     color: aqua;
 }
 
-.photo{
-    margin-top: 10%;
-    float: right;
-    width: 35%;
-}
+
