@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/4aeb5e521a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="header">
+        <div class="container">
+            <nav>
+                <img src="images\logo.jpg" class="logo">
+                <ul>
+                    <li><a href="#header">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#project">Projects</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-text">
+                <p>Hello There!</p>
+                <h1>I'm <span>Rayyan Kauchali</span></h1><br>
+                <p>and i am a student , studying in Mit Wpu. </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ------------------- About -------------------  -->
+    
+    <div id="about">
+        <div class="container">
+            <div class="row">
+                <div class="about-col-1">
+                    <img src="images/nophoto.jpg">
+                    <a href="#" download class="btn">Download CV</a>
+                </div>
+                <div class="about-col-2">
+                    <h1 class="sub-title">About Me</h1>
+                    <p>I am Rayyan Kauchali.I am student at Mit-WPU,Currently studying Computer Science.
+                    </p>
+                    <div class="tab-titles">
+                        <p class="tab-links active-link" onclick="opentab('skills')">Skills</p>
+                        <p class="tab-links" onclick="opentab('education')">Education</p>
+                    </div>
+                    <div class="tab-contents active-tab" id="skills">
+                        <div class="skills">
+                            <div class="skill">
+                                <div class="skill-name">C</div>
+                                <div class="skill-bar">
+                                    <div class="skill-per" per="80%" style="max-width: 80%"></div>
+                                </div>
+                            </div>
+                            <div class="skill">
+                                <div class="skill-name">CPP</div>
+                                <div class="skill-bar">
+                                    <div class="skill-per" per="40%" style="max-width:40%"></div>
+                                </div>
+                            </div>
+
+                            <div class="skill">
+                                <div class="skill-name">HTML</div>
+                                <div class="skill-bar">
+                                    <div class="skill-per" per="70%" style="max-width:70%"></div>
+                                </div>
+                            </div>
+
+                            <div class="skill">
+                                <div class="skill-name">CSS</div>
+                                <div class="skill-bar">
+                                    <div class="skill-per" per="50%" style="max-width:50%"> </div>
+                                </div>
+                            </div>
+
+                            <div class="skill">
+                                <div class="skill-name">MYSQL</div>
+                                <div class="skill-bar">
+                                    <div class="skill-per" per="60%" style="max-width:60%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-contents" id="education">
+                        <ul>
+                            <li><span>BSC Computer Science (pursuing) :</span><br><br> Maharashtra Institute of
+                                Technology (MIT).</li>
+                            <li><span>Higher School Certificate , 2021 :</span><br><br> Rims International School &
+                                Junior College.</li>
+                            <li><span>Secondary School Certificate , 2019 :</span><br><br> The Sardar Dastur Hoshang
+                                Boys' High School.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+  </body>
+</html>
