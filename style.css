@@ -183,7 +183,7 @@ nav ul li a:hover::after{
     content: attr(per);
     position: absolute;
     padding: 4px 6px;
-    background: #21E1E1;
+    background: #256a6a;
     border-radius: 4px;
     font-size: 12px;
     top: -35px;
@@ -216,3 +216,15 @@ nav ul li a:hover::after{
     display: block;
 }
 
+.btn {
+    padding: 14px 50px;
+    width: fit-content;
+    margin: 50px auto;
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    background: #256a6a;
+    border: 1px solid #256a6a;
+    border-radius: 5px;
+}
