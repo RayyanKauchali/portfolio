@@ -474,7 +474,18 @@ nav .fa-solid {
         }
 
         to {
-            width: 90%;
+            width: 80%;
+        }
+    }
+}
+@media only screen and (max-width: 300px) {
+    @keyframes typing {
+        from {
+            width: 0;
+        }
+
+        to {
+            width: 100%;
         }
     }
 }
