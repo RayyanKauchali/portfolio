@@ -396,7 +396,7 @@ nav .fa-solid {
 
 /* ------------------- Small size ------------------- */
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 600px) {
 
     .header-text {
         margin-top: 50%;
@@ -479,6 +479,11 @@ nav .fa-solid {
     }
 }
 @media only screen and (max-width: 300px) {
+    .contact-left,
+    .contact-right {
+        flex-basis: 100%;
+    }
+
     @keyframes typing {
         from {
             width: 0;
