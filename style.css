@@ -490,7 +490,7 @@ nav .fa-solid {
         }
 
         to {
-            width: 100%;
+            width: fit-content;
         }
     }
 }
