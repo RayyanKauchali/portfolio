@@ -479,10 +479,6 @@ nav .fa-solid {
     }
 }
 @media only screen and (max-width: 200px) {
-    .contact-left,
-    .contact-right {
-        flex-basis: 100%;
-    }
 
     @keyframes typing {
         from {
@@ -490,7 +486,7 @@ nav .fa-solid {
         }
 
         to {
-            width: fit-content;
+            width: 100%;
         }
     }
 }
