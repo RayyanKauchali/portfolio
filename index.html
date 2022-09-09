@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -8,33 +9,34 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/4aeb5e521a.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
     <div id="header">
         <div class="container">
             <nav>
-                <img src="logo.jpg" class="logo">
-                <ul>
+                <img src="images/logo.jpg" class="logo">
+                <ul id="sidemenu">
                     <li><a href="#header">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#project">Projects</a></li>
                     <li><a href="#contact">Contact</a></li>
+                    <i class="fa-solid fa-times" onclick="closemenu()"></i>
                 </ul>
+                <i class="fa-solid fa-bars" onclick="openmenu()"></i>
             </nav>
             <div class="header-text">
                 <p>Hello There!</p>
-                <h1>I'm <span>Rayyan Kauchali</span></h1><br>
-                <p>and i am a student , studying in Mit Wpu. </p>
+                <h1>I'm <span>Rayyan Kauchali</span></h1>
+                <h2 class="typingeff">and i am a student</h2>
             </div>
         </div>
     </div>
-    
     <!-- ------------------- About -------------------  -->
-    
     <div id="about">
         <div class="container">
             <div class="row">
                 <div class="about-col-1">
-                    <img src="nophoto.jpg">
+                    <img src="images/nophoto.jpg">
                     <a href="#" download class="btn">Download CV</a>
                 </div>
                 <div class="about-col-2">
@@ -97,8 +99,7 @@
         </div>
     </div>
     </div>
-    
-    <!-- ------------------- Projects -------------------  -->
+    <!-- ------------------- Project -------------------  -->
     <div id="project">
         <div class="container">
             <h1 class="sub-title">Projects</h1>
@@ -109,7 +110,8 @@
                     <p>A portfolio is a collection of financial investments like stocks, bonds, commodities, cash, and
                         cash equivalents, including closed-end funds and exchange traded funds (ETFs). People generally
                         believe that stocks, bonds, and cash comprise the core of a portfolio. </p>
-                    <a href="#">learn more</a>
+                    <a href="https://www.investopedia.com/terms/p/portfolio.asp#:~:text=A%20portfolio%20is%20a%20collection,the%20core%20of%20a%20portfolio."
+                        target=”_blank”>learn more</a>
                 </div>
                 <div>
                     <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
@@ -118,8 +120,36 @@
             </div>
         </div>
     </div>
-    
-    
+    <!-- ------------------- Contact -------------------  -->
+    <div id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="contact-left">
+                    <h1 class="sub-title">Contact Me</h1>
+                    <p><i class="fa-solid fa-paper-plane"></i> rayyankauchali77@gmail.com</p>
+                    <p><i class="fa-solid fa-phone"></i> 9921166545</p>
+                    <div class="social-icons">
+                        <a href=""><i class="fab fa-facebook"></i></a>
+                        <a href=""><i class="fa-brands fa-instagram"></i></a>
+                        <a href=""><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="contact-right">
+                    <form name="submit-to-google-sheet">
+                        <input type="text" name="Name" placeholder="Your Name" required>
+                        <input type="email" name="Email" placeholder="Your Email" required>
+                        <textarea name="Message" rows="6" placeholder="Your Message"></textarea>
+                        <button type="submit" class="btn">Submit</button>
+                    </form>
+                    <span id="msg"></span>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>Copyright © Rayyan. Made with ❤ by Rayyan Kauchali</p>
+        </div>
+    </div>
+
     <script>
         var tablinks = document.getElementsByClassName("tab-links");
         var tabcontents = document.getElementsByClassName("tab-contents");
@@ -134,6 +164,36 @@
             event.currentTarget.classList.add("active-link");
             document.getElementById(tabname).classList.add("active-tab");
         }
-    </script>    
-  </body>
+    </script>
+    <script>
+        var sidemenu = document.getElementById("sidemenu");
+
+        function openmenu() {
+            sidemenu.style.right = "0";
+        }
+        function closemenu() {
+            sidemenu.style.right = "-200px";
+        }
+
+    </script>
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwBX-d0K-NdxojvV1jlysreodHvckCqkE5THGTwhAGsZulDykt5SjqijTrgNWS7H3RJiA/exec'
+        const form = document.forms['submit-to-google-sheet']
+        const msg = document.getElementById("msg")
+
+        form.addEventListener('submit', e => {
+            e.preventDefault()
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => {
+                    msg.innerHTML = "Message Send Successfully"
+                    setTimeout(function () {
+                        msg.innerHTML = ""
+                    }, 3000)
+                    form.reset()
+                })
+                .catch(error => console.error('Error!', error.message))
+        })
+    </script>
+</body>
+
 </html>
