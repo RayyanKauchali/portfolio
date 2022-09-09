@@ -50,7 +50,7 @@ nav ul li a::after{
     content: '';
     width: 0;
     height: 3px;
-    background: #8c9878;
+    background: aqua;
     position: absolute;
     left: 0;
     bottom: -5px;
