@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Skills | Rayyan Kauchali{% endblock %}
+
+{% block content %}
+<div class="page active" id="skills">
+    <section class="page-section">
+        <div class="container">
+            <h2 class="text-cyan">Technical Skills</h2>
+            <div class="skills-grid-container" id="skills-grid-container">
+                
+                {% for category in skills_data %}
+                <div class="skill-category-card">
+                    <h3>{{ category.category }}</h3>
+                    <div class="skill-item-grid">
+                        {% for skill in category.skills %}
+                        <div class="skill-item">
+                            <div class="skill-item-logo">
+                                {{ skill.svg | safe }}
+                            </div>
+                            <span>{{ skill.name }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-secondary" style="text-align: center;">Skills data is being loaded...</p>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

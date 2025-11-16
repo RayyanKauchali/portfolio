@@ -1,0 +1,7 @@
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-Login
+python-dotenv
+python-slugify
+gunicorn

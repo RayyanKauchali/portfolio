@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rayyan Kauchali | Portfolio{% endblock %}</title>
+    
+    <meta name="description" content="Portfolio of Rayyan Kauchali, an MSc Data & AI student specializing in Data Science, Machine Learning, and Data Engineering.">
+    <meta name="author" content="Rayyan Kauchali">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <!-- We link to admin.css on the pages that need it -->
+    {% block head_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- ---------- NAVBAR ---------- -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="nav-logo">Rayyan<span>.</span></a>
+            <div class="nav-links" id="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.path == url_for('index') %}active{% endif %}">Home</a>
+                <a href="{{ url_for('about') }}" class="nav-link {% if request.path == url_for('about') %}active{% endif %}">About</a>
+                <a href="{{ url_for('skills') }}" class="nav-link {% if request.path == url_for('skills') %}active{% endif %}">Skills</a>
+                <a href="{{ url_for('certificates') }}" class="nav-link {% if request.path == url_for('certificates') %}active{% endif %}">Certificates</a>
+                <a href="{{ url_for('projects') }}" class="nav-link {% if request.path == url_for('projects') %}active{% endif %}">Projects</a>
+                <a href="{{ url_for('contact') }}" class="nav-link {% if request.path == url_for('contact') %}active{% endif %}">Contact</a>
+                
+                <!-- Show Admin link only if logged in -->
+                {% if session.logged_in %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="nav-link" style="color: var(--accent-cyan);">Admin</a>
+                {% endif %}
+            </div>
+            
+            <!-- This is the conditional logic you wanted -->
+            {% if session.logged_in %}
+                <!-- Show LOGOUT button if admin is logged in -->
+                <a href="{{ url_for('admin_logout') }}" class="nav-cta" style="background-color: var(--accent-teal);">
+                    Logout
+                </a>
+            {% else %}
+                <!-- Show DOWNLOAD RESUME button for all other users -->
+                <a href="{{ url_for('download_resume') }}" class="nav-cta">
+                    Download Resume
+                </a>
+            {% endif %}
+            
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    <!-- ---------- END NAVBAR ---------- -->
+
+
+    <!-- Main content block for child pages -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+
+    <!-- ---------- FOOTER ---------- -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    &copy; <span id="current-year">2025</span> Rayyan Kauchali. All rights reserved. <br>
+                    Pune, Maharashtra, India
+                </div>
+                <div class="footer-socials">
+                    <a href="https://linkedin.com/in/rayyankauchali" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://github.com/rayyankauchali" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="mailto:rayyankauchali77@gmail.com" aria-label="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ---------- END FOOTER ---------- -->
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

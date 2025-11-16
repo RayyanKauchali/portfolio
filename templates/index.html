@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Rayyan Kauchali | Home{% endblock %}
+
+{% block content %}
+<div class="page active" id="home">
+    <section class="hero" id="hero-section"> <!-- Added ID for JS -->
+        <div class="container">
+            <div class="hero-content">
+                <!-- Added animation class -->
+                <h1 class="hero-animate">Rayyan Kauchali</h1>
+
+                <!-- NEW: Typing effect for your roles -->
+                <h2 class="hero-subtitle hero-animate">
+                    I am a <span id="typing-effect" class="text-cyan"></span>
+                </h2>
+                
+                <!-- Added animation class -->
+                <div class="hero-stats hero-animate">
+                    <div><span>{{ project_count }}+</span> Projects</div>
+                    <!-- --- MODIFIED THIS LINE --- -->
+                    <div><span>{{ skill_count }}+</span> Skills</div>
+                </div>
+                
+                <!-- This section is now replaced by the typing animation above -->
+                <!-- <div class="hero-roles"> ... </div> -->
+                
+                <!-- Added animation class and ID for JS -->
+                <div class="hero-featured-grid hero-animate" id="featured-grid">
+                    <div class="featured-card">
+                        <h4><span class="text-cyan">01</span> Data Science</h4>
+                        <p>Predictive modeling, NLP, and statistical analysis.</p>
+                    </div>
+                    <div class="featured-card">
+                        <h4><span class="text-cyan">02</span> ML Engineering</h4>
+                        <p>Deploying robust, scalable models and MLOps.</p>
+                    </div>
+                    <div class="featured-card">
+                        <h4><span class="text-cyan">03</span> Data Engineering</h4>
+                        <p>Building ETL pipelines, Spark jobs, and data lakes.</p>
+                    </div>
+                    <div class="featured-card">
+                        <h4><span class="text-cyan">04</span> Data Analytics</h4>
+                        <p>Actionable insights via Power BI and analytics tools.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

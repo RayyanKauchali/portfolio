@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Certificates | Rayyan Kauchali{% endblock %}
+
+{% block content %}
+<div class="page active" id="certificates">
+    <section class="page-section">
+        <div class="container">
+            <h2 class="text-cyan">Certifications</h2>
+            <div class="certificates-grid" id="certificates-grid">
+                
+                <!-- Python will loop through certificates from the database -->
+                {% for cert in certificates %}
+                <div class="cert-card">
+                    <div class="cert-icon"><i class="{{ cert.icon }}"></i></div>
+                    <div class="cert-content">
+                        <h4>{{ cert.title }}</h4>
+                        <p>{{ cert.provider }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <!-- --- MODIFIED THIS LINE --- -->
+                <p class="text-secondary" style="text-align: center; width: 100%;">No certifications to display at this time.</p>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

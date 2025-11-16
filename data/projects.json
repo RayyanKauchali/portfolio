@@ -1,0 +1,23 @@
+[
+  {
+    "title": "AI-Powered Resume Analysis & Job Matching Platform",
+    "role": "ML Engineer",
+    "tech": "Python, NLP, Scikit-learn, Flask, React",
+    "description": "Engineered a dual-portal web platform: an HR dashboard for batch uploading and automated scoring of resumes against JDs, and a student portal for personalized resume health checks.",
+    "image": "https://placehold.co/600x400/0a0a0a/00bcd4?text=AI+Resume+Analyzer"
+  },
+  {
+    "title": "Brain Tumor Classification using IDTNet",
+    "role": "Data Scientist",
+    "tech": "Python, TensorFlow, Keras, CNN, Computer Vision",
+    "description": "Developed a hybrid convolutional model (IDTNet) by integrating Inception modules and DenseNet connections for robust multi-class MRI tumor classification, achieving 98% accuracy.",
+    "image": "https://placehold.co/600x400/0a0a0a/00bcd4?text=Brain+Tumor+AI"
+  },
+  {
+    "title": "Emotion Detection System using DeepFace",
+    "role": "ML Engineer",
+    "tech": "Python, DeepFace, OpenCV, Computer Vision",
+    "description": "Built an automated real-time emotion recognition module leveraging DeepFace for facial expression analysis (happy, sad, angry) in video streams and static images.",
+    "image": "https://placehold.co/600x400/0a0a0a/00bcd4?text=Emotion+Detection"
+  }
+]

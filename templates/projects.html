@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Projects | Rayyan Kauchali{% endblock %}
+
+{% block content %}
+<div class="page active" id="projects">
+    <section class="page-section">
+        <div class="container">
+            <h2 class="text-cyan">Projects</h2>
+            <div class="projects-layout">
+                <aside class="project-filters">
+                    <h3>Filters</h3>
+                    
+                    <div class="filter-group">
+                        <div class="filter-search">
+                            <input type="text" id="search-filter" placeholder="Search projects...">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Role</h4>
+                        <div class="filter-options" id="role-filter">
+                            <label><input type="radio" name="role" value="All" checked> All Roles</label>
+                            <label><input type="radio" name="role" value="Data Scientist"> Data Scientist</label>
+                            <label><input type="radio" name="role" value="ML Engineer"> ML Engineer</label>
+                            <label><input type="radio" name="role" value="Data Engineer"> Data Engineer</label>
+                            <label><input type="radio" name="role" value="Data Analyst"> Data Analyst</label>
+                            <label><input type="radio" name="role" value="Web Developer"> Web Developer</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h4>Technology</h4>
+                        <div class="filter-tags" id="tech-filter">
+                            <span class="filter-tag active" data-tech="All">All</span>
+                            <span class="filter-tag" data-tech="Python">Python</span>
+                            <span class="filter-tag" data-tech="TensorFlow">TensorFlow</span>
+                            <span class="filter-tag" data-tech="NLP">NLP</span>
+                            <span class="filter-tag" data-tech="Spark">Spark</span>
+                            <span class="filter-tag" data-tech="Power BI">Power BI</span>
+                            <span class="filter-tag" data-tech="AWS">AWS</span>
+                            <span class="filter-tag" data-tech="React">React</span>
+                        </div>
+                    </div>
+                    
+                </aside>
+                
+                <div class="project-grid" id="project-grid">
+                    
+                    {% for project in projects %}
+                    <div class="project-card" data-role="{{ project.role }}" data-tech="{{ project.tech.lower() }}">
+                        <img src="{{ project.image }}" alt="{{ project.title }}" class="project-card-image">
+                        <div class="project-card-content">
+                            <span class="project-card-role">{{ project.role }}</span>
+                            <h4>{{ project.title }}</h4>
+                            <p class="project-card-desc">{{ project.description }}</p>
+                            <div class="project-card-tags">
+                                {% for tag in project.tech.split(',') %}
+                                    <span class="project-card-tag">{{ tag.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p id="project-grid-message" class="text-secondary" style="text-align: center;">No projects have been added yet. Visit the <a href="{{ url_for('admin_login') }}" class="text-cyan">admin panel</a> to add them.</p>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

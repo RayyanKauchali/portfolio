@@ -1,0 +1,266 @@
+/* --- Admin Base --- */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+.admin-header h2 {
+    margin: 0;
+    text-align: left;
+}
+
+/* --- Flash Messages --- */
+.flash-message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+.flash-message.danger {
+    background-color: #4d0000;
+    color: #ffcccc;
+    border: 1px solid #990000;
+}
+.flash-message.success {
+    background-color: #003300;
+    color: #ccffcc;
+    border: 1px solid #006600;
+}
+.flash-message.info {
+    background-color: #002b33;
+    color: #ccfeff;
+    border: 1px solid #005666;
+}
+
+/* --- Tab Navigation --- */
+.admin-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+}
+.tab-button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-family);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+.tab-button:hover {
+    color: var(--text-primary);
+}
+.tab-button.active {
+    color: var(--accent-cyan);
+    border-bottom-color: var(--accent-cyan);
+}
+.tab-content {
+    display: none; /* Hidden by default */
+}
+.tab-content.active {
+    display: block; /* Shown by JS */
+    animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+/* --- Admin Forms --- */
+.admin-section {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.admin-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+.admin-card h3 {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-form-col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    transition: all 0.3s ease;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.3);
+}
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+.admin-form-col button {
+    margin-top: auto; /* Push button to bottom */
+}
+
+/* --- Admin Buttons --- */
+.admin-btn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--accent-cyan);
+    color: var(--text-dark);
+    text-decoration: none;
+}
+.admin-btn:hover {
+    background-color: var(--accent-cyan-dark);
+}
+
+.admin-btn-edit {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    color: var(--accent-cyan);
+    background-color: transparent;
+    border: 2px solid var(--accent-cyan);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-right: 0.5rem;
+}
+.admin-btn-edit:hover {
+    background-color: var(--accent-cyan);
+    color: var(--text-dark);
+}
+
+.admin-btn-delete {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    color: #ffcccc;
+    background-color: transparent;
+    border: 2px solid #990000;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.admin-btn-delete:hover {
+    background-color: #990000;
+    color: var(--text-primary);
+}
+
+/* --- Management Lists --- */
+.admin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
+}
+.admin-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+}
+.admin-list-item-content {
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 1rem;
+}
+.admin-list-item-content strong {
+    color: var(--text-primary);
+}
+.admin-list-item-content i {
+    color: var(--accent-cyan);
+    margin-right: 0.5rem;
+}
+.admin-list-item-actions {
+    display: flex;
+    flex-shrink: 0;
+}
+.admin-list-item-actions form {
+    margin: 0; /* Remove default form margin */
+}
+
+/* --- Edit Page Form --- */
+.edit-form-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.edit-form-card h2 {
+    text-align: left;
+}
+
+/* --- Responsive for Admin --- */
+@media (max-width: 992px) {
+    .admin-section {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 768px) {
+    .admin-tabs {
+        flex-wrap: wrap;
+    }
+    .tab-button {
+        flex-grow: 1;
+        text-align: center;
+    }
+    .admin-list-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .admin-list-item-actions {
+        width: 100%;
+    }
+    .admin-list-item-actions a,
+    .admin-list-item-actions button {
+        flex-grow: 1;
+        text-align: center;
+    }
+}

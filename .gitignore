@@ -1,0 +1,20 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Instance folder (Contains database!)
+instance/
+
+# Local environment variables
+.env
+.env.local
+*.env*
+
+# OS-specific
+.DS_Store
+Thumbs.db
