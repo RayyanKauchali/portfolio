@@ -5,3 +5,4 @@ Flask-Login
 python-dotenv
 python-slugify
 gunicorn
+psycopg2-binary
