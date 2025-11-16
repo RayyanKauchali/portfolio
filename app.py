@@ -32,22 +32,74 @@ def login_required(f):
 # --- Context Processors ---
 @app.context_processor
 def inject_global_vars():
-    """
-    Injects project and SKILL counts into all templates
-    for the home page stats.
-    """
     try:
         project_count = db.session.query(Project).count()
-        # --- MODIFIED THIS LINE ---
         skill_count = db.session.query(Skill).count() 
     except Exception as e:
         project_count = 0
-        skill_count = 0 # <-- MODIFIED
+        skill_count = 0
         
     return dict(
         project_count=project_count,
-        skill_count=skill_count # <-- MODIFIED
+        skill_count=skill_count
     )
+    
+# ---  DATABASE INIT FUNCTION (MOVED FROM init_db.py) ---
+def initialize_database():
+    """
+    Drops and recreates all tables, then seeds projects and skills
+    from the JSON files. This is called by the secret setup route.
+    """
+    try:
+        print("Dropping all tables...")
+        db.drop_all()
+        print("Creating all tables...")
+        db.create_all()
+
+        # --- Seed Projects ---
+        PROJECTS_JSON_PATH = os.path.join(app.root_path, 'data', 'projects.json')
+        try:
+            with open(PROJECTS_JSON_PATH, 'r') as f:
+                projects_seed = json.load(f)
+            print(f"Seeding {len(projects_seed)} projects...")
+            for p in projects_seed:
+                new_project = Project(
+                    title=p.get('title'),
+                    role=p.get('role'),
+                    tech=p.get('tech'),
+                    description=p.get('description'),
+                    image=p.get('image')
+                )
+                db.session.add(new_project)
+        except Exception as e:
+            print(f"Could not seed projects: {e}")
+
+        # --- Seed Skills ---
+        SKILLS_JSON_PATH = os.path.join(app.root_path, 'data', 'skills.json')
+        try:
+            with open(SKILLS_JSON_PATH, 'r') as f:
+                skills_seed = json.load(f)
+            print(f"Seeding skills...")
+            for category in skills_seed:
+                cat_name = category.get('category')
+                for skill in category.get('skills', []):
+                    new_skill = Skill(
+                        category=cat_name,
+                        name=skill.get('name'),
+                        svg=skill.get('svg')
+                    )
+                    db.session.add(new_skill)
+        except Exception as e:
+            print(f"Could not seed skills: {e}")
+        
+        db.session.commit()
+        print("Database has been initialized and seeded successfully!")
+        return True
+    except Exception as e:
+        print(f"An error occurred during DB initialization: {e}")
+        db.session.rollback()
+        return False
+
 
 # --- PUBLIC ROUTES ---
 
@@ -68,7 +120,6 @@ def projects():
 def skills():
     skills_data_from_db = Skill.query.all()
     
-    # Re-structure data for the template
     skills_data = {}
     for skill in skills_data_from_db:
         if skill.category not in skills_data:
@@ -135,7 +186,29 @@ def admin_dashboard():
     projects = Project.query.order_by(Project.id).all()
     certificates = Certificate.query.order_by(Certificate.id).all()
     skills = Skill.query.order_by(Skill.category, Skill.id).all()
-    return render_template('admin_dashboard.html', projects=projects, certificates=certificates, skills=skills)
+    
+    # Check if DB is empty to show setup link
+    db_is_empty = (len(projects) == 0 and len(skills) == 0)
+    
+    return render_template(
+        'admin_dashboard.html',
+        projects=projects,
+        certificates=certificates,
+        skills=skills,
+        db_is_empty=db_is_empty
+    )
+
+# --- NEW: SECRET DATABASE SETUP ROUTE ---
+@app.route('/admin/first-time-setup-run-once')
+def first_time_setup():
+    # We run this one time on the server to seed the database
+    # This replaces using the 'Shell'
+    with app.app_context():
+        if initialize_database():
+            flash('SUCCESS: Database has been initialized and seeded!', 'success')
+        else:
+            flash('ERROR: Database initialization failed. Check logs.', 'danger')
+    return redirect(url_for('admin_dashboard'))
 
 # --- ADD ITEMS ---
 @app.route('/admin/add/project', methods=['POST'])
@@ -172,7 +245,7 @@ def add_certificate():
     except Exception as e:
         db.session.rollback()
         flash(f'Error adding certificate: {e}', 'danger')
-    return redirect(url_for('admin_dashboard'))
+    return redirect(url_for('admin_dashboard') + '#certificates')
 
 @app.route('/admin/add/skill', methods=['POST'])
 @login_required
@@ -191,7 +264,7 @@ def add_skill():
         flash(f'Error adding skill: {e}', 'danger')
     return redirect(url_for('admin_dashboard') + '#skills') # Go to skills tab
 
-# --- EDIT ITEMS (NEW) ---
+# --- EDIT ITEMS ---
 
 @app.route('/admin/edit/project/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -246,7 +319,7 @@ def edit_skill(id):
             flash(f'Error updating skill: {e}', 'danger')
     return render_template('edit_skill.html', skill=skill)
 
-# --- DELETE ITEMS (Updated to POST for safety) ---
+# --- DELETE ITEMS (Fixed: Methods set to POST) ---
 
 @app.route('/admin/delete/project/<int:id>', methods=['POST'])
 @login_required

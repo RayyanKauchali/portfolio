@@ -11,7 +11,6 @@
         <div class="container">
             <div class="admin-header">
                 <h2 class="text-cyan">Admin Dashboard</h2>
-                <!-- Logout button is now only in the main navbar -->
             </div>
 
             <!-- Flash messages for success/errors -->
@@ -22,6 +21,16 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
+
+            <!-- NEW: Show this message only if the database is empty -->
+            {% if db_is_empty %}
+            <div class="flash-message info">
+                <strong>Your database is empty!</strong><br>
+                To seed the initial project and skill data, please visit this secret URL one time:
+                <a href="{{ url_for('first_time_setup') }}" style="color:white; font-weight:bold; text-decoration: underline;">Run First-Time Setup</a>
+            </div>
+            {% endif %}
+
 
             <!-- Tab Navigation -->
             <div class="admin-tabs">
@@ -219,7 +228,7 @@
 
         // Check for hash in URL on page load
         const initialTab = window.location.hash.substring(1);
-        if (initialTab) {
+        if (initialTab && document.getElementById(initialTab)) {
             showTab(initialTab);
         } else {
             // Show the first tab by default if no hash
