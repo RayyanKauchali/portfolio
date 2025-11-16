@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class Project(db.Model):
+    # ... (existing code, no changes)
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(100), nullable=False)
@@ -14,6 +15,7 @@ class Project(db.Model):
         return f'<Project {self.title}>'
 
 class Certificate(db.Model):
+    # ... (existing code, no changes)
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     provider = db.Column(db.String(100), nullable=False)
@@ -23,6 +25,7 @@ class Certificate(db.Model):
         return f'<Certificate {self.title}>'
 
 class Skill(db.Model):
+    # ... (existing code, no changes)
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
@@ -30,3 +33,16 @@ class Skill(db.Model):
 
     def __repr__(self):
         return f'<Skill {self.name}>'
+
+# --- NEW MODEL ---
+class Todo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(100), nullable=True, default="General")
+    # Statuses: "Active", "Pending", "Paused", "Done"
+    status = db.Column(db.String(50), nullable=False, default='Pending') 
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    completed_at = db.Column(db.DateTime, nullable=True)
+
+    def __repr__(self):
+        return f'<Todo {self.task[:30]}>'

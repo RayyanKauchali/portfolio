@@ -4,9 +4,10 @@ from flask import (
     Flask, render_template, request, redirect, url_for, session, flash, g,
     send_from_directory
 )
-from models import db, Project, Certificate, Skill # Import Skill
+from models import db, Project, Certificate, Skill, Todo # --- IMPORT TODO ---
 import config
 from functools import wraps
+from sqlalchemy import or_ # --- IMPORT OR_ ---
 
 # --- App Initialization ---
 app = Flask(__name__)
@@ -19,23 +20,15 @@ except OSError:
 
 db.init_app(app)
 
-# --- NEW: CREATE TABLES ON STARTUP ---
-# This function will run once when the app starts.
-# It checks if the tables exist and creates them if they don't.
-# This is a robust way to ensure your app doesn't crash on a new deploy.
+# --- CREATE TABLES ON STARTUP ---
 @app.before_request
 def create_tables():
-    # The 'before_first_request' hook is deprecated, so we use a
-    # global flag 'db_initialized' to ensure this only runs ONCE
-    # per server process.
     if not getattr(g, 'db_initialized', False):
         with app.app_context():
             print("--- ENSURING DATABASE TABLES EXIST ---")
-            db.create_all() # This creates tables if they don't exist
+            db.create_all() 
             print("--- DATABASE TABLES CHECKED ---")
         g.db_initialized = True
-# --- END NEW CODE ---
-
 
 # --- Admin Authentication Helper ---
 def login_required(f):
@@ -54,7 +47,6 @@ def inject_global_vars():
         project_count = db.session.query(Project).count()
         skill_count = db.session.query(Skill).count() 
     except Exception as e:
-        # This error is now fine, it just means tables are empty
         project_count = 0
         skill_count = 0
         
@@ -63,12 +55,8 @@ def inject_global_vars():
         skill_count=skill_count
     )
     
-# ---  DATABASE INIT FUNCTION (MOVED FROM init_db.py) ---
+# ---  DATABASE INIT FUNCTION ---
 def initialize_database():
-    """
-    Drops and recreates all tables, then seeds projects and skills
-    from the JSON files. This is called by the secret setup route.
-    """
     try:
         print("Dropping all tables...")
         db.drop_all()
@@ -82,13 +70,7 @@ def initialize_database():
                 projects_seed = json.load(f)
             print(f"Seeding {len(projects_seed)} projects...")
             for p in projects_seed:
-                new_project = Project(
-                    title=p.get('title'),
-                    role=p.get('role'),
-                    tech=p.get('tech'),
-                    description=p.get('description'),
-                    image=p.get('image')
-                )
+                new_project = Project(title=p.get('title'), role=p.get('role'), tech=p.get('tech'), description=p.get('description'), image=p.get('image'))
                 db.session.add(new_project)
         except Exception as e:
             print(f"Could not seed projects: {e}")
@@ -102,14 +84,55 @@ def initialize_database():
             for category in skills_seed:
                 cat_name = category.get('category')
                 for skill in category.get('skills', []):
-                    new_skill = Skill(
-                        category=cat_name,
-                        name=skill.get('name'),
-                        svg=skill.get('svg')
-                    )
+                    new_skill = Skill(category=cat_name, name=skill.get('name'), svg=skill.get('svg'))
                     db.session.add(new_skill)
         except Exception as e:
             print(f"Could not seed skills: {e}")
+            
+        # --- Seed Default Tasks ---
+        DEFAULT_TASKS = [
+            {"task": "Review and update all project descriptions in the portfolio admin panel.", "category": "Portfolio"},
+            {"task": "Start research for a new 'Deep Learning' project (e.g., StyleGAN or NLP Transformer).", "category": "Project"},
+            {"task": "Learn one new MLOps concept (e.g., Kubeflow, MLflow).", "category": "Learning"},
+            {"task": "Update 'About Me' page and check all links.", "category": "Portfolio"},
+            {"task": "Write 500 words for a blog post about the 'Brain Tumor AI' project.", "category": "Project"},
+            {"task": "Learn one new Data Engineering concept (e.g., dbt models, Airflow DAGs).", "category": "Learning"},
+            {"task": "Add 2-3 new 'Beginner' projects to the portfolio.", "category": "Portfolio"},
+            {"task": "Complete a tutorial on 'Microsoft Fabric'.", "category": "Learning"},
+            {"task": "Refine the styling on the portfolio's 'Skills' page.", "category": "Portfolio"},
+            {"task": "Begin coding the new 'Deep Learning' project.", "category": "Project"},
+            {"task": "Learn advanced 'XAI' (Explainable AI) techniques (LIME/SHAP).", "category": "Learning"},
+            {"task": "Add a new 'Certificate' to the admin panel.", "category": "Portfolio"},
+            {"task": "Refactor the 'Emotion Detection' project's code for clarity.", "category": "Project"},
+            {"task": "Find and add 3 new 'Data Analyst' projects.", "category": "Portfolio"},
+            {"task": "Study one new cloud service on AWS (e.g., SageMaker).", "category": "Learning"},
+            {"task": "Halfway check: Review all portfolio text for typos.", "category": "Portfolio"},
+            {"task": "Implement a new feature on the 'AI Resume Analyzer' project.", "category": "Project"},
+            {"task": "Learn one new 'Generative AI' concept (e.g., Diffusion models).", "category": "Learning"},
+            {"task": "Add 2 new skills (with SVGs) to the admin panel.", "category": "Portfolio"},
+            {"task": "Finalize and deploy the 'Deep Learning' project.", "category": "Project"},
+            {"task": "Write the 'Project Detail' page for the new project.", "category": "Portfolio"},
+            {"task": "Learn a new Python library (e.g., 'Polars' for dataframes).", "category": "Learning"},
+            {"task": "Start research for the *next* new project (e.g., a 'Data Engineering' pipeline).", "category": "Project"},
+            {"task": "Add a 'To-Do' list feature to the portfolio admin panel.", "category": "Portfolio"},
+            {"task": "Learn Docker and containerize one of your Flask projects.", "category": "Learning"},
+            {"task": "Begin coding the new 'Data Engineering' pipeline project.", "category": "Project"},
+            {"task": "Learn how to write unit tests for a Flask app (pytest).", "category": "Learning"},
+            {"task": "Update the 'Download Resume' PDF to the latest version.", "category": "Portfolio"},
+            {"task": "Complete and deploy the 'Data Engineering' project.", "category": "Project"},
+            {"task": "Plan the next 30 days of tasks.", "category": "Planning"}
+        ]
+        try:
+            print(f"Seeding {len(DEFAULT_TASKS)} default tasks...")
+            for i, task_data in enumerate(DEFAULT_TASKS):
+                new_task = Todo(
+                    task=task_data.get('task'),
+                    category=task_data.get('category'),
+                    status="Active" if i == 0 else "Pending" 
+                )
+                db.session.add(new_task)
+        except Exception as e:
+            print(f"Could not seed default tasks: {e}")
         
         db.session.commit()
         print("Database has been initialized and seeded successfully!")
@@ -206,20 +229,29 @@ def admin_dashboard():
     certificates = Certificate.query.order_by(Certificate.id).all()
     skills = Skill.query.order_by(Skill.category, Skill.id).all()
     
+    # --- NEW: Fetch all Todo tasks, split by status ---
+    todos_active = Todo.query.filter_by(status='Active').order_by(Todo.id.asc()).all()
+    todos_pending = Todo.query.filter_by(status='Pending').order_by(Todo.id.asc()).all()
+    todos_paused = Todo.query.filter_by(status='Paused').order_by(Todo.id.asc()).all()
+    todos_done = Todo.query.filter_by(status='Done').order_by(Todo.completed_at.desc()).limit(10).all()
+
     # Check if DB is empty to show setup link
-    db_is_empty = (len(projects) == 0 and len(skills) == 0)
+    db_is_empty = (len(projects) == 0 and len(skills) == 0 and len(todos_active) == 0)
     
     return render_template(
         'admin_dashboard.html',
         projects=projects,
         certificates=certificates,
         skills=skills,
+        todos_active=todos_active,
+        todos_pending=todos_pending,
+        todos_paused=todos_paused,
+        todos_done=todos_done,
         db_is_empty=db_is_empty
     )
 
-# --- NEW: SECRET DATABASE SETUP ROUTE ---
 @app.route('/admin/first-time-setup-run-once')
-@login_required 
+@login_required
 def first_time_setup():
     with app.app_context():
         if initialize_database():
@@ -232,14 +264,9 @@ def first_time_setup():
 @app.route('/admin/add/project', methods=['POST'])
 @login_required
 def add_project():
+    # ... (existing code, no changes)
     try:
-        new_project = Project(
-            title=request.form.get('title'),
-            role=request.form.get('role'),
-            tech=request.form.get('tech'),
-            description=request.form.get('description'),
-            image=request.form.get('image')
-        )
+        new_project = Project(title=request.form.get('title'), role=request.form.get('role'), tech=request.form.get('tech'), description=request.form.get('description'), image=request.form.get('image'))
         db.session.add(new_project)
         db.session.commit()
         flash('Project added successfully!', 'success')
@@ -251,12 +278,9 @@ def add_project():
 @app.route('/admin/add/certificate', methods=['POST'])
 @login_required
 def add_certificate():
+    # ... (existing code, no changes)
     try:
-        new_certificate = Certificate(
-            title=request.form.get('title'),
-            provider=request.form.get('provider'),
-            icon=request.form.get('icon')
-        )
+        new_certificate = Certificate(title=request.form.get('title'), provider=request.form.get('provider'), icon=request.form.get('icon'))
         db.session.add(new_certificate)
         db.session.commit()
         flash('Certificate added successfully!', 'success')
@@ -268,25 +292,41 @@ def add_certificate():
 @app.route('/admin/add/skill', methods=['POST'])
 @login_required
 def add_skill():
+    # ... (existing code, no changes)
     try:
-        new_skill = Skill(
-            category=request.form.get('category'),
-            name=request.form.get('name'),
-            svg=request.form.get('svg')
-        )
+        new_skill = Skill(category=request.form.get('category'), name=request.form.get('name'), svg=request.form.get('svg'))
         db.session.add(new_skill)
         db.session.commit()
         flash('Skill added successfully!', 'success')
     except Exception as e:
         db.session.rollback()
         flash(f'Error adding skill: {e}', 'danger')
-    return redirect(url_for('admin_dashboard') + '#skills') # Go to skills tab
+    return redirect(url_for('admin_dashboard') + '#skills')
+
+# --- NEW: ADD TODO ---
+@app.route('/admin/add/todo', methods=['POST'])
+@login_required
+def add_todo():
+    try:
+        new_todo = Todo(
+            task=request.form.get('task'),
+            category=request.form.get('category'),
+            status="Pending" # Always add new tasks as Pending
+        )
+        db.session.add(new_todo)
+        db.session.commit()
+        flash('To-Do task added successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding task: {e}', 'danger')
+    return redirect(url_for('admin_dashboard') + '#roadmap')
 
 # --- EDIT ITEMS ---
 
 @app.route('/admin/edit/project/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_project(id):
+    # ... (existing code, no changes)
     project = Project.query.get_or_404(id)
     if request.method == 'POST':
         try:
@@ -306,6 +346,7 @@ def edit_project(id):
 @app.route('/admin/edit/certificate/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_certificate(id):
+    # ... (existing code, no changes)
     certificate = Certificate.query.get_or_404(id)
     if request.method == 'POST':
         try:
@@ -322,7 +363,8 @@ def edit_certificate(id):
 
 @app.route('/admin/edit/skill/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit_skill(id): 
+def edit_skill(id):
+    # ... (existing code, no changes)
     skill = Skill.query.get_or_404(id)
     if request.method == 'POST':
         try:
@@ -337,11 +379,30 @@ def edit_skill(id):
             flash(f'Error updating skill: {e}', 'danger')
     return render_template('edit_skill.html', skill=skill)
 
-# --- DELETE ITEMS (Fixed: Methods set to POST) ---
+# --- NEW: EDIT TODO ---
+@app.route('/admin/edit/todo/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_todo(id):
+    task = Todo.query.get_or_404(id)
+    if request.method == 'POST':
+        try:
+            task.task = request.form.get('task')
+            task.category = request.form.get('category')
+            task.status = request.form.get('status')
+            db.session.commit()
+            flash('Task updated successfully!', 'success')
+            return redirect(url_for('admin_dashboard') + '#roadmap')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating task: {e}', 'danger')
+    return render_template('edit_todo.html', task=task)
+
+# --- DELETE ITEMS ---
 
 @app.route('/admin/delete/project/<int:id>', methods=['POST'])
 @login_required
 def delete_project(id):
+    # ... (existing code, no changes)
     project = Project.query.get_or_404(id)
     db.session.delete(project)
     db.session.commit()
@@ -351,6 +412,7 @@ def delete_project(id):
 @app.route('/admin/delete/certificate/<int:id>', methods=['POST'])
 @login_required
 def delete_certificate(id):
+    # ... (existing code, no changes)
     certificate = Certificate.query.get_or_404(id)
     db.session.delete(certificate)
     db.session.commit()
@@ -360,11 +422,69 @@ def delete_certificate(id):
 @app.route('/admin/delete/skill/<int:id>', methods=['POST'])
 @login_required
 def delete_skill(id):
+    # ... (existing code, no changes)
     skill = Skill.query.get_or_404(id)
     db.session.delete(skill)
     db.session.commit()
     flash('Skill deleted.', 'success')
     return redirect(url_for('admin_dashboard') + '#skills')
+
+# --- NEW: DELETE TODO ---
+@app.route('/admin/delete/todo/<int:id>', methods=['POST'])
+@login_required
+def delete_todo(id):
+    task = Todo.query.get_or_404(id)
+    db.session.delete(task)
+    db.session.commit()
+    flash('Task deleted.', 'success')
+    return redirect(url_for('admin_dashboard') + '#roadmap')
+
+# --- NEW: UPDATE TODO STATUS ---
+
+def _set_active_task(task_to_activate):
+    # Find any other active/paused task and set it to pending
+    other_task = Todo.query.filter(or_(Todo.status == 'Active', Todo.status == 'Paused')).first()
+    if other_task:
+        other_task.status = 'Pending'
+    # Set the new task to active
+    task_to_activate.status = 'Active'
+
+@app.route('/admin/todo/set_active/<int:id>', methods=['POST'])
+@login_required
+def set_active_task(id):
+    task = Todo.query.get_or_404(id)
+    _set_active_task(task)
+    db.session.commit()
+    flash(f"Task '{task.task[:30]}...' set to Active.", 'success')
+    return redirect(url_for('admin_dashboard') + '#roadmap')
+
+@app.route('/admin/todo/set_pause/<int:id>', methods=['POST'])
+@login_required
+def set_pause_task(id):
+    task = Todo.query.get_or_404(id)
+    task.status = 'Paused'
+    db.session.commit()
+    flash(f"Task '{task.task[:30]}...' has been paused.", 'info')
+    return redirect(url_for('admin_dashboard') + '#roadmap')
+
+@app.route('/admin/todo/set_complete/<int:id>', methods=['POST'])
+@login_required
+def set_complete_task(id):
+    task = Todo.query.get_or_404(id)
+    task.status = 'Done'
+    task.completed_at = db.func.now()
+    
+    # Find the next task in the "Pending" list
+    next_task = Todo.query.filter_by(status='Pending').order_by(Todo.id.asc()).first()
+    if next_task:
+        _set_active_task(next_task)
+        flash(f"Task completed! Next task: '{next_task.task[:30]}...'", 'success')
+    else:
+        flash("Task completed! No more pending tasks.", 'success')
+        
+    db.session.commit()
+    return redirect(url_for('admin_dashboard') + '#roadmap')
+
 
 # --- Run the App ---
 if __name__ == '__main__':

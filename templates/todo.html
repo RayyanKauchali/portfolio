@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}My Roadmap | Rayyan Kauchali{% endblock %}
+
+{% block head_css %}
+    <!-- We can re-use the admin CSS for the task lists -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page active" id="todo-list">
+    <section class="page-section">
+        <div class="container" style="max-width: 900px;">
+            <h2 class="text-cyan">My Learning Roadmap</h2>
+            <p class="about-summary">
+                This is a live look at what I'm currently working on and learning. 
+                I believe in staying curious and consistently improving my skills.
+            </p>
+
+            <!-- Active Task -->
+            <div class="admin-card" style="border-color: var(--accent-cyan); margin-bottom: 2rem;">
+                <h3><i class="fas fa-rocket text-cyan"></i> Now Active</h3>
+                <div class="admin-list">
+                    {% for task in todos_active %}
+                        <div class="admin-list-item active-task">
+                            <div class="admin-list-item-content">
+                                <strong>{{ task.task }}</strong>
+                                <p class="text-secondary" style="margin:0;">Category: {{ task.category }}</p>
+                            </div>
+                            <!-- Only show buttons if admin is logged in -->
+                            {% if session.logged_in %}
+                            <div class="admin-list-item-actions">
+                                <form action="{{ url_for('set_complete_task', id=task.id) }}" method="POST" style="flex-grow: 1;">
+                                    <button type="submit" class="admin-btn-complete">Complete & Next</button>
+                                </form>
+                                <form action="{{ url_for('set_pause_task', id=task.id) }}" method="POST">
+                                    <button type="submit" class="admin-btn-pause">Pause</button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="text-secondary">No active task. I'm currently planning my next steps!</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Pending Tasks -->
+            <div class="admin-card" style="margin-bottom: 2rem;">
+                <h3><i class="fas fa-list-ol text-secondary"></i> Up Next</h3>
+                <div class="admin-list">
+                    {% for task in todos_active %}
+                        <div class="admin-list-item">
+                            <div class="admin-list-item-content">
+                                <strong>{{ task.task }}</strong>
+                                <p class="text-secondary" style="margin:0;">Category: {{ task.category }}</p>
+                            </div>
+                            {% if session.logged_in %}
+                            <div class="admin-list-item-actions">
+                                <form action="{{ url_for('set_active_task', id=task.id) }}" method="POST">
+                                    <button type="submit" class="admin-btn-start">Start</button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="text-secondary">The task queue is clear for now.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Recently Completed Tasks -->
+            <div class="admin-card" style="opacity: 0.8;">
+                <h3><i class="fas fa-check-circle text-secondary"></i> Recently Completed</h3>
+                 <div class="admin-list">
+                    {% for task in todos_done %}
+                    <div class="admin-list-item" style="opacity: 0.6;">
+                        <div class="admin-list-item-content">
+                            <strong style="text-decoration: line-through;">{{ task.task }}</strong>
+                            <p class="text-secondary" style="margin:0;">Completed: {{ task.completed_at.strftime('%Y-%m-%d') }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-secondary">No tasks completed yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+{% endblock %}
