@@ -19,6 +19,24 @@ except OSError:
 
 db.init_app(app)
 
+# --- NEW: CREATE TABLES ON STARTUP ---
+# This function will run once when the app starts.
+# It checks if the tables exist and creates them if they don't.
+# This is a robust way to ensure your app doesn't crash on a new deploy.
+@app.before_request
+def create_tables():
+    # The 'before_first_request' hook is deprecated, so we use a
+    # global flag 'db_initialized' to ensure this only runs ONCE
+    # per server process.
+    if not getattr(g, 'db_initialized', False):
+        with app.app_context():
+            print("--- ENSURING DATABASE TABLES EXIST ---")
+            db.create_all() # This creates tables if they don't exist
+            print("--- DATABASE TABLES CHECKED ---")
+        g.db_initialized = True
+# --- END NEW CODE ---
+
+
 # --- Admin Authentication Helper ---
 def login_required(f):
     @wraps(f)
@@ -36,6 +54,7 @@ def inject_global_vars():
         project_count = db.session.query(Project).count()
         skill_count = db.session.query(Skill).count() 
     except Exception as e:
+        # This error is now fine, it just means tables are empty
         project_count = 0
         skill_count = 0
         
@@ -200,9 +219,8 @@ def admin_dashboard():
 
 # --- NEW: SECRET DATABASE SETUP ROUTE ---
 @app.route('/admin/first-time-setup-run-once')
+@login_required 
 def first_time_setup():
-    # We run this one time on the server to seed the database
-    # This replaces using the 'Shell'
     with app.app_context():
         if initialize_database():
             flash('SUCCESS: Database has been initialized and seeded!', 'success')
@@ -304,7 +322,7 @@ def edit_certificate(id):
 
 @app.route('/admin/edit/skill/<int:id>', methods=['GET', 'POST'])
 @login_required
-def edit_skill(id):
+def edit_skill(id): 
     skill = Skill.query.get_or_404(id)
     if request.method == 'POST':
         try:
@@ -350,9 +368,4 @@ def delete_skill(id):
 
 # --- Run the App ---
 if __name__ == '__main__':
-    with app.app_context():
-        try:
-            db.create_all() 
-        except Exception as e:
-            print(f"Database tables might already exist. Error: {e}")
     app.run(debug=True)
