@@ -1,3 +1,16 @@
+/* --- Admin Root Variables --- */
+:root {
+    --color-warning: #ffc107;
+    --color-warning-bg: #332a00;
+    --color-warning-border: #665500;
+    --color-success: #00bcd4; /* Use cyan for success */
+    --color-success-bg: #002b33;
+    --color-success-border: #005666;
+    --color-danger: #ff5252;
+    --color-danger-bg: #4d0000;
+    --color-danger-border: #990000;
+}
+
 /* --- Admin Base --- */
 .admin-header {
     display: flex;
@@ -20,19 +33,19 @@
     font-weight: 500;
 }
 .flash-message.danger {
-    background-color: #4d0000;
-    color: #ffcccc;
-    border: 1px solid #990000;
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger-border);
 }
 .flash-message.success {
-    background-color: #003300;
-    color: #ccffcc;
-    border: 1px solid #006600;
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+    border: 1px solid var(--color-success-border);
 }
 .flash-message.info {
-    background-color: #002b33;
-    color: #ccfeff;
-    border: 1px solid #005666;
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning-border);
 }
 
 /* --- Tab Navigation --- */
@@ -41,6 +54,7 @@
     gap: 0.5rem;
     margin-bottom: 2rem;
     border-bottom: 2px solid var(--border-color);
+    flex-wrap: wrap; /* Allow tabs to wrap on small screens */
 }
 .tab-button {
     background: none;
@@ -74,14 +88,21 @@
 }
 
 
-/* --- Admin Forms --- */
-.admin-section {
+/* --- NEW 2-Column Layout --- */
+.admin-section-2col {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+.admin-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
+
+/* --- Admin Forms & Cards --- */
 .admin-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -94,6 +115,15 @@
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
     margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Space for icon */
+}
+.admin-card.active-task-card {
+    border-color: var(--accent-cyan);
+}
+.admin-card.paused-task-card {
+    border-color: var(--color-warning-border);
 }
 
 .admin-form-col {
@@ -111,7 +141,8 @@
     color: var(--text-secondary);
 }
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
     padding: 0.75rem;
     font-size: 0.9rem;
@@ -123,7 +154,8 @@
     transition: all 0.3s ease;
 }
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
     border-color: var(--accent-cyan);
     box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.3);
@@ -135,6 +167,18 @@
 .admin-form-col button {
     margin-top: auto; /* Push button to bottom */
 }
+/* Fix for select dropdown in dark mode */
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em;
+    padding-right: 2.5rem; /* Make space for arrow */
+}
+
 
 /* --- Admin Buttons --- */
 .admin-btn {
@@ -155,39 +199,83 @@
     background-color: var(--accent-cyan-dark);
 }
 
-.admin-btn-edit {
+/* Icon Button Base */
+.admin-btn-icon {
     font-size: 0.9rem;
     font-weight: 600;
-    padding: 0.4rem 0.8rem;
-    color: var(--accent-cyan);
-    background-color: transparent;
-    border: 2px solid var(--accent-cyan);
-    border-radius: 6px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    margin-right: 0.5rem;
-}
-.admin-btn-edit:hover {
-    background-color: var(--accent-cyan);
-    color: var(--text-dark);
-}
-
-.admin-btn-delete {
-    font-size: 0.9rem;
-    font-weight: 600;
-    padding: 0.4rem 0.8rem;
-    color: #ffcccc;
-    background-color: transparent;
-    border: 2px solid #990000;
+    padding: 0.5rem 0.8rem;
     border-radius: 6px;
     text-decoration: none;
     transition: all 0.3s ease;
     cursor: pointer;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    margin: 0 0.25rem;
 }
-.admin-btn-delete:hover {
-    background-color: #990000;
+.admin-btn-icon:hover {
+    background-color: var(--bg-hover);
     color: var(--text-primary);
 }
+
+/* Icon Button Colors */
+.admin-btn-icon.btn-edit {
+    border-color: var(--accent-cyan-dark);
+    color: var(--accent-cyan);
+}
+.admin-btn-icon.btn-edit:hover {
+    background-color: var(--accent-cyan);
+    color: var(--text-dark);
+}
+
+.admin-btn-icon.btn-delete {
+    border-color: var(--color-danger-border);
+    color: var(--color-danger);
+}
+.admin-btn-icon.btn-delete:hover {
+    background-color: var(--color-danger-bg);
+    color: var(--text-primary);
+}
+
+.admin-btn-icon.btn-start {
+    border-color: var(--color-success-border);
+    color: var(--color-success);
+}
+.admin-btn-icon.btn-start:hover {
+    background-color: var(--color-success-bg);
+    color: var(--text-primary);
+}
+.admin-btn-icon.btn-pause {
+    border-color: var(--color-warning-border);
+    color: var(--color-warning);
+}
+.admin-btn-icon.btn-pause:hover {
+    background-color: var(--color-warning-bg);
+    color: var(--text-primary);
+}
+
+/* Full-width "Complete" Button */
+.admin-btn-complete {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-family);
+    margin: 0 0.25rem;
+    width: 100%;
+    background-color: var(--accent-cyan);
+    color: var(--text-dark);
+    border: 2px solid var(--accent-cyan);
+}
+.admin-btn-complete:hover {
+    background-color: var(--accent-cyan-dark);
+    border-color: var(--accent-cyan-dark);
+}
+
 
 /* --- Management Lists --- */
 .admin-list {
@@ -207,13 +295,13 @@
 }
 .admin-list-item-content {
     color: var(--text-secondary);
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 1rem;
 }
 .admin-list-item-content strong {
     color: var(--text-primary);
+    display: block; /* Make title stack on top */
 }
 .admin-list-item-content i {
     color: var(--accent-cyan);
@@ -238,7 +326,7 @@
 
 /* --- Responsive for Admin --- */
 @media (max-width: 992px) {
-    .admin-section {
+    .admin-section-2col {
         grid-template-columns: 1fr;
     }
 }
@@ -259,8 +347,12 @@
         width: 100%;
     }
     .admin-list-item-actions a,
-    .admin-list-item-actions button {
+    .admin-list-item-actions button,
+    .admin-list-item-actions form {
         flex-grow: 1;
-        text-align: center;
+        display: flex;
+    }
+    .admin-list-item-actions button {
+        width: 100%;
     }
 }

@@ -32,7 +32,6 @@
 
             <!-- Tab Navigation -->
             <div class="admin-tabs">
-                <!-- --- NEW ROADMAP TAB --- -->
                 <button class="tab-button active" data-tab="roadmap">Roadmap</button>
                 <button class="tab-button" data-tab="projects">Projects</button>
                 <button class="tab-button" data-tab="skills">Skills</button>
@@ -41,119 +40,126 @@
 
             <!-- --- NEW TAB CONTENT: ROADMAP --- -->
             <div id="roadmap" class="tab-content active">
-                <!-- Active Task -->
-                <div class="admin-card" style="border-color: var(--accent-cyan);">
-                    <h3><i class="fas fa-rocket text-cyan"></i> Active Task</h3>
-                    <div class="admin-list">
-                        {% for task in todos_active %}
-                            <div class="admin-list-item active-task">
-                                <div class="admin-list-item-content">
-                                    <strong>{{ task.task }}</strong>
-                                    <p class="text-secondary" style="margin:0;">Category: {{ task.category }}</p>
-                                </div>
-                                <div class="admin-list-item-actions">
-                                    <form action="{{ url_for('set_complete_task', id=task.id) }}" method="POST" style="flex-grow: 1;">
-                                        <button type="submit" class="admin-btn-complete">Complete & Next</button>
-                                    </form>
-                                    <form action="{{ url_for('set_pause_task', id=task.id) }}" method="POST">
-                                        <button type="submit" class="admin-btn-pause">Pause</button>
-                                    </form>
-                                </div>
+                <div class="admin-section-2col">
+                    
+                    <!-- Left Column -->
+                    <div class="admin-col">
+                        <!-- Active Task -->
+                        <div class="admin-card active-task-card">
+                            <h3><i class="fas fa-rocket text-cyan"></i> Active Task</h3>
+                            <div class="admin-list">
+                                {% for task in todos_active %}
+                                    <div class="admin-list-item">
+                                        <div class="admin-list-item-content">
+                                            <strong>{{ task.task }}</strong>
+                                            <p class="text-secondary" style="margin:0;">Category: {{ task.category }}</p>
+                                        </div>
+                                        <div class="admin-list-item-actions">
+                                            <form action="{{ url_for('set_complete_task', id=task.id) }}" method="POST" style="flex-grow: 1;">
+                                                <button type="submit" class="admin-btn-complete">Complete & Next</button>
+                                            </form>
+                                            <form action="{{ url_for('set_pause_task', id=task.id) }}" method="POST">
+                                                <button type="submit" class="admin-btn-icon btn-pause" title="Pause"><i class="fas fa-pause"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <p class="text-secondary">No active task. Go to "Pending" and start one!</p>
+                                {% endfor %}
                             </div>
-                        {% else %}
-                            <p class="text-secondary">No active task. Go to "Pending" and start one!</p>
-                        {% endfor %}
-                    </div>
-                </div>
+                        </div>
 
-                <div class="admin-section">
-                    <!-- Add New Task Form -->
-                    <div class="admin-card">
-                        <h3>Add New Task</h3>
-                        <form action="{{ url_for('add_todo') }}" method="POST" class="admin-form-col">
-                            <div class="form-group">
-                                <label for="task-task">Task</label>
-                                <textarea id="task-task" name="task" rows="3" placeholder="e.g., Learn how to use Docker Swarm" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="task-category">Category</label>
-                                <input type="text" id="task-category" name="category" placeholder="e.g., Learning, Project, Portfolio" required>
-                            </div>
-                            <button type="submit" class="admin-btn">Add to Pending</button>
-                        </form>
-                    </div>
-                    <!-- Paused Tasks List -->
-                    <div class="admin-card">
-                        <h3><i class="fas fa-pause-circle text-secondary"></i> Paused Tasks</h3>
-                        <div class="admin-list">
-                            {% for task in todos_paused %}
-                            <div class="admin-list-item">
-                                <div class="admin-list-item-content">
-                                    <strong>{{ task.task }}</strong>
+                        <!-- Add New Task Form -->
+                        <div class="admin-card">
+                            <h3>Add New Task</h3>
+                            <form action="{{ url_for('add_todo') }}" method="POST" class="admin-form-col">
+                                <div class="form-group">
+                                    <label for="task-task">Task</label>
+                                    <textarea id="task-task" name="task" rows="3" placeholder="e.g., Learn how to use Docker Swarm" required></textarea>
                                 </div>
-                                <div class="admin-list-item-actions">
-                                    <form action="{{ url_for('set_active_task', id=task.id) }}" method="POST">
-                                        <button type="submit" class="admin-btn-start">Start</button>
-                                    </form>
-                                    <a href="{{ url_for('edit_todo', id=task.id) }}" class="admin-btn-edit">Edit</a>
+                                <div class="form-group">
+                                    <label for="task-category">Category</label>
+                                    <input type="text" id="task-category" name="category" placeholder="e.g., Learning, Project, Portfolio" required>
                                 </div>
-                            </div>
-                            {% else %}
-                            <p class="text-secondary">No tasks are paused.</p>
-                            {% endfor %}
+                                <button type="submit" class="admin-btn">Add to Pending</button>
+                            </form>
                         </div>
-                    </div>
-                </div>
 
-                <div class="admin-section">
-                    <!-- Pending Tasks List -->
-                    <div class="admin-card">
-                        <h3><i class="fas fa-list-ol text-secondary"></i> Pending Queue</h3>
-                        <div class="admin-list">
-                            {% for task in todos_pending %}
-                            <div class="admin-list-item">
-                                <div class="admin-list-item-content">
-                                    <strong>{{ task.task }}</strong>
-                                    <p class="text-secondary" style="margin:0;">Category: {{ task.category }}</p>
+                        <!-- Paused Tasks List -->
+                        <div class="admin-card paused-task-card">
+                            <h3><i class="fas fa-pause-circle"></i> Paused Tasks</h3>
+                            <div class="admin-list">
+                                {% for task in todos_paused %}
+                                <div class="admin-list-item">
+                                    <div class="admin-list-item-content">
+                                        <strong>{{ task.task }}</strong>
+                                    </div>
+                                    <div class="admin-list-item-actions">
+                                        <form action="{{ url_for('set_active_task', id=task.id) }}" method="POST">
+                                            <button type="submit" class="admin-btn-icon btn-start" title="Set as Active"><i class="fas fa-play"></i></button>
+                                        </form>
+                                        <a href="{{ url_for('edit_todo', id=task.id) }}" class="admin-btn-icon btn-edit" title="Edit"><i class="fas fa-pencil"></i></a>
+                                    </div>
                                 </div>
-                                <div class="admin-list-item-actions">
-                                    <form action="{{ url_for('set_active_task', id=task.id) }}" method="POST">
-                                        <button type="submit" class="admin-btn-start">Start</button>
-                                    </form>
-                                    <a href="{{ url_for('edit_todo', id=task.id) }}" class="admin-btn-edit">Edit</a>
-                                    <form action="{{ url_for('delete_todo', id=task.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                                        <button type="submit" class="admin-btn-delete">Del</button>
-                                    </form>
-                                </div>
+                                {% else %}
+                                <p class="text-secondary">No tasks are paused.</p>
+                                {% endfor %}
                             </div>
-                            {% else %}
-                            <p class="text-secondary">No pending tasks!</p>
-                            {% endfor %}
                         </div>
                     </div>
-                    <!-- Completed Tasks List -->
-                    <div class="admin-card">
-                        <h3><i class="fas fa-check-circle text-secondary"></i> Recently Completed</h3>
-                         <div class="admin-list">
-                            {% for task in todos_done %}
-                            <div class="admin-list-item" style="opacity: 0.6;">
-                                <div class="admin-list-item-content">
-                                    <strong style="text-decoration: line-through;">{{ task.task }}</strong>
-                                    <p class="text-secondary" style="margin:0;">Completed: {{ task.completed_at.strftime('%Y-%m-%d') }}</p>
+
+                    <!-- Right Column -->
+                    <div class="admin-col">
+                        <!-- Pending Tasks List -->
+                        <div class="admin-card">
+                            <h3><i class="fas fa-list-ol text-secondary"></i> Pending Queue</h3>
+                            <div class="admin-list">
+                                {% for task in todos_pending %}
+                                <div class="admin-list-item">
+                                    <div class="admin-list-item-content">
+                                        <strong>{{ task.task }}</strong>
+                                        <p class="text-secondary" style="margin:0;">Category: {{ task.category }}</p>
+                                    </div>
+                                    <div class="admin-list-item-actions">
+                                        <form action="{{ url_for('set_active_task', id=task.id) }}" method="POST">
+                                            <button type="submit" class="admin-btn-icon btn-start" title="Set as Active"><i class="fas fa-play"></i></button>
+                                        </form>
+                                        <a href="{{ url_for('edit_todo', id=task.id) }}" class="admin-btn-icon btn-edit" title="Edit"><i class="fas fa-pencil"></i></a>
+                                        <form action="{{ url_for('delete_todo', id=task.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                            <button type="submit" class="admin-btn-icon btn-delete" title="Delete"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </div>
                                 </div>
+                                {% else %}
+                                <p class="text-secondary">No pending tasks!</p>
+                                {% endfor %}
                             </div>
-                            {% else %}
-                            <p class="text-secondary">No tasks completed yet.</p>
-                            {% endfor %}
+                        </div>
+                        <!-- Completed Tasks List -->
+                        <div class="admin-card">
+                            <h3><i class="fas fa-check-circle text-secondary"></i> Recently Completed</h3>
+                             <div class="admin-list">
+                                {% for task in todos_done %}
+                                <div class="admin-list-item" style="opacity: 0.6;">
+                                    <div class="admin-list-item-content">
+                                        <strong style="text-decoration: line-through;">{{ task.task }}</strong>
+                                        <p class="text-secondary" style="margin:0;">Completed: {{ task.completed_at.strftime('%Y-%m-%d') }}</p>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <p class="text-secondary">No tasks completed yet.</p>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
             <!-- Tab Content: Projects -->
             <div id="projects" class="tab-content">
-                <!-- ... (existing code, no changes) ... -->
-                <div class="admin-section">
+                <div class="admin-section-2col">
+                    <!-- Add Project Form -->
                     <div class="admin-card">
                         <h3>Add New Project</h3>
                         <form action="{{ url_for('add_project') }}" method="POST" class="admin-form-col">
@@ -180,6 +186,7 @@
                             <button type="submit" class="admin-btn">Add Project</button>
                         </form>
                     </div>
+                    <!-- Manage Projects List -->
                     <div class="admin-card">
                         <h3>Manage Projects</h3>
                         <div class="admin-list">
@@ -190,9 +197,9 @@
                                     <p class="text-secondary" style="margin:0;">{{ project.role }}</p>
                                 </div>
                                 <div class="admin-list-item-actions">
-                                    <a href="{{ url_for('edit_project', id=project.id) }}" class="admin-btn-edit">Edit</a>
+                                    <a href="{{ url_for('edit_project', id=project.id) }}" class="admin-btn-icon btn-edit" title="Edit"><i class="fas fa-pencil"></i></a>
                                     <form action="{{ url_for('delete_project', id=project.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this project?');">
-                                        <button type="submit" class="admin-btn-delete">Delete</button>
+                                        <button type="submit" class="admin-btn-icon btn-delete" title="Delete"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </div>
                             </div>
@@ -206,8 +213,8 @@
 
             <!-- Tab Content: Skills -->
             <div id="skills" class="tab-content">
-                <!-- ... (existing code, no changes) ... -->
-                <div class="admin-section">
+                <div class="admin-section-2col">
+                    <!-- Add Skill Form -->
                     <div class="admin-card">
                         <h3>Add New Skill</h3>
                         <form action="{{ url_for('add_skill') }}" method="POST" class="admin-form-col">
@@ -226,6 +233,7 @@
                             <button type="submit" class="admin-btn">Add Skill</button>
                         </form>
                     </div>
+                    <!-- Manage Skills List -->
                     <div class="admin-card">
                         <h3>Manage Skills</h3>
                         <div class="admin-list">
@@ -236,9 +244,9 @@
                                     <p class="text-secondary" style="margin:0;">{{ skill.category }}</p>
                                 </div>
                                 <div class="admin-list-item-actions">
-                                    <a href="{{ url_for('edit_skill', id=skill.id) }}" class="admin-btn-edit">Edit</a>
+                                    <a href="{{ url_for('edit_skill', id=skill.id) }}" class="admin-btn-icon btn-edit" title="Edit"><i class="fas fa-pencil"></i></a>
                                     <form action="{{ url_for('delete_skill', id=skill.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this skill?');">
-                                        <button type="submit" class="admin-btn-delete">Delete</button>
+                                        <button type="submit" class="admin-btn-icon btn-delete" title="Delete"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </div>
                             </div>
@@ -252,8 +260,8 @@
 
             <!-- Tab Content: Certificates -->
             <div id="certificates" class="tab-content">
-                <!-- ... (existing code, no changes) ... -->
-                <div class="admin-section">
+                <div class="admin-section-2col">
+                    <!-- Add Certificate Form -->
                     <div class="admin-card">
                         <h3>Add New Certificate</h3>
                         <form action="{{ url_for('add_certificate') }}" method="POST" class="admin-form-col">
@@ -272,6 +280,7 @@
                             <button type="submit" class="admin-btn" style="margin-top: 1.5rem;">Add Certificate</button>
                         </form>
                     </div>
+                    <!-- Manage Certificates List -->
                     <div class="admin-card">
                         <h3>Manage Certificates</h3>
                         <div class="admin-list">
@@ -282,9 +291,9 @@
                                     <strong>{{ cert.title }}</strong>
                                 </div>
                                 <div class="admin-list-item-actions">
-                                    <a href="{{ url_for('edit_certificate', id=cert.id) }}" class="admin-btn-edit">Edit</a>
+                                    <a href="{{ url_for('edit_certificate', id=cert.id) }}" class="admin-btn-icon btn-edit" title="Edit"><i class="fas fa-pencil"></i></a>
                                     <form action="{{ url_for('delete_certificate', id=cert.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this certificate?');">
-                                        <button type="submit" class="admin-btn-delete">Delete</button>
+                                        <button type="submit" class="admin-btn-icon btn-delete" title="Delete"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </div>
                             </div>
